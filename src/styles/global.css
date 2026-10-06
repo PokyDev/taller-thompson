@@ -23,7 +23,12 @@
   --pista-bg: #26331a;
 }
 
-body { background: var(--bg); color: var(--texto); transition: background .2s, color .2s; }
+body { background: var(--bg); color: var(--texto); transition: background .2s, color .2s; overflow-wrap: anywhere; }
+
+/* ---------- Layout de la página (antes estilos inline) ---------- */
+.pagina { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.contenedor { width: 100%; max-width: 46rem; }
+.progreso-wrap { text-align: center; opacity: .7; margin-bottom: .5rem; }
 
 .card { background: var(--card); border: 1px solid var(--borde); border-radius: 1rem; padding: 1.75rem; min-height: 26rem; }
 .barra { display: flex; gap: .75rem; justify-content: center; margin-top: 1rem; }
@@ -110,4 +115,35 @@ body { background: var(--bg); color: var(--texto); transition: background .2s, c
     --desde: translateX(-1.25rem); /* desliza desde el card hacia la derecha */
   }
   .card { position: relative; z-index: 1; }
+}
+
+/* =====================================================================
+   Responsive: celulares (<= 40rem / 640px)
+   ===================================================================== */
+@media (max-width: 40rem) {
+  /* Arriba: deja espacio al botón de tema (fijo, 2.75rem + 1rem) y alinea al inicio
+     para que contenido largo no quede cortado por el centrado vertical. */
+  .pagina { align-items: flex-start; padding: 4.25rem .75rem 1.5rem; }
+
+  .card { padding: 1.1rem; min-height: 0; border-radius: .85rem; }
+  .punto-titulo { font-size: 1.2rem; line-height: 1.3; }
+  .punto-lista-titulo { margin-top: 1rem; }
+  .punto-nota { margin-top: 1.1rem; }
+  .lista-letras li { gap: .4rem; }
+
+  /* Pista apilada bajo el card, con scroll propio si es muy larga */
+  .pista-panel { max-height: 60vh; max-height: 60dvh; padding: .85rem .9rem; font-size: .9rem; }
+
+  /* Barra de navegación: Pista arriba a todo el ancho; Anterior/Siguiente debajo, 50/50 */
+  .barra { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .barra .btn { min-height: 2.75rem; padding: .6rem .75rem; width: 100%; }  /* objetivo táctil >= 44px */
+  #pista { grid-column: 1 / -1; grid-row: 1; min-width: 0; }
+}
+
+/* Celulares muy angostos (<= 22.5rem / 360px) */
+@media (max-width: 22.5rem) {
+  .pagina { padding-inline: .5rem; }
+  .card { padding: .9rem; }
+  .punto-titulo { font-size: 1.1rem; }
+  .barra .btn { font-size: .9rem; }
 }
