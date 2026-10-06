@@ -35,6 +35,22 @@
     height: 2.75rem;
     padding: 0;
     border-radius: 9999px;
+
+    /* Visible solo en el tope de la página */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .3s ease, visibility .3s;
+  }
+
+  /* Oculto al hacer scroll: visibility evita clics y foco con teclado mientras no se ve */
+  .tema-btn.oculto {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tema-btn { transition: none; }
   }
 
   /* Tema claro: se ve la luna; tema oscuro: se ve el sol */
@@ -60,4 +76,13 @@
     localStorage.setItem('tema', nuevo);
     actualizarEtiqueta();
   });
+
+  // Mostrar solo en el tope de la página (con un pequeño margen de tolerancia)
+  const UMBRAL = 10;
+  const actualizarVisibilidad = () => {
+    btn.classList.toggle('oculto', window.scrollY > UMBRAL);
+  };
+
+  window.addEventListener('scroll', actualizarVisibilidad, { passive: true });
+  actualizarVisibilidad(); // por si la página carga ya con scroll (recarga a mitad de página)
 </script>

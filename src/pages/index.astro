@@ -36,7 +36,16 @@ import { puntos } from '../data/puntos';
 
         {puntos.map((p, i) => (
           <aside class="pista-panel" data-pista={i} aria-label="Pista">
-            <p class="pista-titulo">💡 Pista</p>
+            <p class="pista-titulo">
+              <svg class="icono-pista" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.3 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+                <path d="M9 18h6" />
+                <path d="M10 22h4" />
+              </svg>
+              Pista
+            </p>
             <p>{p.pista.intro}</p>
             <ol class="pasos">
               {p.pista.pasos.map((paso) => <li>{paso}</li>)}
@@ -48,7 +57,16 @@ import { puntos } from '../data/puntos';
 
       <nav class="barra">
         <button id="atras" class="btn btn-outline">← Anterior</button>
-        <button id="pista" class="btn" aria-expanded="false"><span id="pista-texto" class="fade-texto">💡 Pista</span></button>
+        <button id="pista" class="btn btn-pista" aria-expanded="false">
+          <svg class="icono-pista" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.3 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+            <path d="M9 18h6" />
+            <path d="M10 22h4" />
+          </svg>
+          <span id="pista-texto" class="fade-texto">Pista</span>
+        </button>
         <button id="sig" class="btn btn-outline">Siguiente →</button>
       </nav>
     </div>
@@ -81,7 +99,7 @@ import { puntos } from '../data/puntos';
       cambiarTexto(document.getElementById('progreso')!, `Punto ${actual + 1} de ${secciones.length}`);
       $('atras').disabled = actual === 0;
       $('sig').disabled = actual === secciones.length - 1;
-      cambiarTexto(document.getElementById('pista-texto')!, pistaAbierta ? '💡 Ocultar pista' : '💡 Pista');
+      cambiarTexto(document.getElementById('pista-texto')!, pistaAbierta ? 'Ocultar pista' : 'Pista');
       $('pista').setAttribute('aria-expanded', String(pistaAbierta));
     }
 

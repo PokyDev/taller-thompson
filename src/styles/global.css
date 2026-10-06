@@ -98,7 +98,9 @@ body { background: var(--bg); color: var(--texto); transition: background .2s, c
   .pista-panel, .fade-texto { transition: none; }
 }
 
-.pista-titulo { font-weight: 700; margin-bottom: .4rem; }
+.btn-pista { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; }
+.pista-titulo { display: flex; align-items: center; gap: .4rem; }
+.icono-pista { flex-shrink: 0; }
 .pasos { list-style: decimal; padding-left: 1.2rem; margin-top: .5rem; display: grid; gap: .35rem; }
 
 /* En pantallas anchas: a la derecha del card, misma altura, sin mover el card.
