@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  --verde: #1e7a3e;
+  --verde-oscuro: #34531f;
+  --lima: #bfd730;
+  --bg: #f4f8f0;
+  --texto: #1c2b1a;
+  --card: #ffffff;
+  --borde: #cfdcc6;
+  --acento: var(--verde);        /* botones */
+  --acento-texto: #ffffff;
+  --pista-bg: #eef5c9;           /* fondo de pistas */
+}
+
+:root[data-theme="dark"] {
+  --bg: #101810;
+  --texto: #e8f0e4;
+  --card: #1a251a;
+  --borde: #2f4430;
+  --acento: var(--lima);
+  --acento-texto: #1c2b10;
+  --pista-bg: #26331a;
+}
+
+body { background: var(--bg); color: var(--texto); transition: background .2s, color .2s; }
+
+.card { background: var(--card); border: 1px solid var(--borde); border-radius: 1rem; padding: 1.75rem; min-height: 26rem; }
+.barra { display: flex; gap: .75rem; justify-content: center; margin-top: 1rem; }
+.btn { background: var(--acento); color: var(--acento-texto); border-radius: .6rem; padding: .6rem 1.2rem; font-weight: 600; cursor: pointer; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-outline { background: transparent; color: var(--texto); border: 1px solid var(--borde); }
+
+/* ---------- Enunciado del punto ---------- */
+.punto-titulo { font-size: 1.4rem; font-weight: 700; margin-bottom: .75rem; }
+.punto-lista-titulo { font-weight: 700; margin-top: 1.25rem; }
+.lista-letras { display: grid; gap: .35rem; margin: .5rem 0 0; padding: 0; list-style: none; }
+.lista-letras li { display: flex; gap: .5rem; }
+.lista-letras b { min-width: 1.1rem; }
+.punto-nota { font-weight: 700; margin-top: 1.5rem; }
+
+/* ---------- Pista (una sola, alternable) ---------- */
+.escenario { position: relative; }
+
+.pista-panel {
+  background: var(--pista-bg);
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--lima);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  margin-top: 1rem;              /* apilada debajo en pantallas angostas */
+  font-size: .92rem;
+  overflow-y: auto;
+
+  /* Entrada/salida: opacidad + movimiento (display se anima con allow-discrete) */
+  --desde: translateY(-.5rem);
+  display: none;
+  opacity: 0;
+  transform: var(--desde);
+  transition: opacity .3s ease, transform .3s ease, display .3s allow-discrete;
+
+  /* Scrollbar (Firefox y navegadores sin ::-webkit-scrollbar) */
+  scrollbar-width: thin;
+  scrollbar-color: var(--acento) transparent;
+}
+.pista-panel.abierta { display: block; opacity: 1; transform: none; }
+@starting-style {
+  .pista-panel.abierta { opacity: 0; transform: var(--desde); }
+}
+
+/* Scrollbar (Chrome, Edge, Safari) */
+@supports selector(::-webkit-scrollbar) {
+  .pista-panel { scrollbar-width: auto; scrollbar-color: auto; }
+  .pista-panel::-webkit-scrollbar { width: 10px; }
+  .pista-panel::-webkit-scrollbar-track { background: transparent; margin: .75rem 0; }
+  .pista-panel::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--acento) 55%, transparent);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  .pista-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--acento);
+    background-clip: padding-box;
+  }
+}
+
+/* Cambio de texto con fade (botón de pista, progreso) */
+.fade-texto { display: inline-block; transition: opacity .15s ease; }
+#pista { min-width: 11rem; }      /* evita que el botón cambie de ancho al cambiar el texto */
+
+@media (prefers-reduced-motion: reduce) {
+  .pista-panel, .fade-texto { transition: none; }
+}
+
+.pista-titulo { font-weight: 700; margin-bottom: .4rem; }
+.pasos { list-style: decimal; padding-left: 1.2rem; margin-top: .5rem; display: grid; gap: .35rem; }
+
+/* En pantallas anchas: a la derecha del card, misma altura, sin mover el card.
+   El ancho se adapta al espacio libre a la derecha del contenedor centrado. */
+@media (min-width: 80rem) {
+  .pista-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;                   /* misma altura que el card */
+    left: 100%;
+    margin: 0 0 0 .75rem;        /* pequeño margen */
+    width: min(19rem, calc(50vw - 24.5rem));
+    z-index: 0;
+    --desde: translateX(-1.25rem); /* desliza desde el card hacia la derecha */
+  }
+  .card { position: relative; z-index: 1; }
+}

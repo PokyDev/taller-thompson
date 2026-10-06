@@ -1,16 +1,103 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import DiagramaThompson from '../components/DiagramaThompson.astro';
+import { puntos } from '../data/puntos';
 ---
+<Layout title="Taller: ER y Thompson en JFLAP">
+  <ThemeToggle />
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  <main style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1rem;">
+    <div style="width:100%; max-width:46rem;">
+      <p style="text-align:center; opacity:.7; margin-bottom:.5rem;"><span id="progreso" class="fade-texto"></span></p>
+
+      <div class="escenario">
+        <article class="card">
+          {puntos.map((p, i) => (
+            <section data-punto={i} hidden={i !== 0}>
+              <h2 class="punto-titulo">{p.titulo}</h2>
+              <p>{p.intro}{p.expresion && <> <strong>{p.expresion}</strong></>}</p>
+
+              {p.items && (
+                <>
+                  <p class="punto-lista-titulo">{p.listaTitulo}</p>
+                  <ul class="lista-letras">
+                    {p.items.map((it) => (
+                      <li><b>{it.letra}.</b><span>{it.texto}</span></li>
+                    ))}
+                  </ul>
+                </>
+              )}
+
+              {p.nota && <p class="punto-nota">{p.nota}</p>}
+            </section>
+          ))}
+        </article>
+
+        {puntos.map((p, i) => (
+          <aside class="pista-panel" data-pista={i} aria-label="Pista">
+            <p class="pista-titulo">💡 Pista</p>
+            <p>{p.pista.intro}</p>
+            <ol class="pasos">
+              {p.pista.pasos.map((paso) => <li>{paso}</li>)}
+            </ol>
+            {p.pista.diagrama === 'thompson-1' && <DiagramaThompson />}
+          </aside>
+        ))}
+      </div>
+
+      <nav class="barra">
+        <button id="atras" class="btn btn-outline">← Anterior</button>
+        <button id="pista" class="btn" aria-expanded="false"><span id="pista-texto" class="fade-texto">💡 Pista</span></button>
+        <button id="sig" class="btn btn-outline">Siguiente →</button>
+      </nav>
+    </div>
+  </main>
+
+  <script>
+    const secciones = [...document.querySelectorAll<HTMLElement>('[data-punto]')];
+    const paneles = [...document.querySelectorAll<HTMLElement>('[data-pista]')];
+    const $ = (id: string) => document.getElementById(id) as HTMLButtonElement;
+    let actual = 0;
+    let pistaAbierta = false;
+
+    // Cambia el texto de un elemento con fade-out → texto nuevo → fade-in
+    const temporizadores = new WeakMap<HTMLElement, number>();
+    function cambiarTexto(el: HTMLElement, texto: string) {
+      if (el.textContent === texto) return;
+      clearTimeout(temporizadores.get(el));
+      if (!el.textContent) { el.textContent = texto; return; } // primera carga: sin animar
+      el.style.opacity = '0';
+      temporizadores.set(el, window.setTimeout(() => {
+        el.textContent = texto;
+        el.style.opacity = '1';
+      }, 150));
+    }
+
+    function render() {
+      secciones.forEach((s, i) => (s.hidden = i !== actual));
+      paneles.forEach((p, i) => p.classList.toggle('abierta', pistaAbierta && i === actual));
+
+      cambiarTexto(document.getElementById('progreso')!, `Punto ${actual + 1} de ${secciones.length}`);
+      $('atras').disabled = actual === 0;
+      $('sig').disabled = actual === secciones.length - 1;
+      cambiarTexto(document.getElementById('pista-texto')!, pistaAbierta ? '💡 Ocultar pista' : '💡 Pista');
+      $('pista').setAttribute('aria-expanded', String(pistaAbierta));
+    }
+
+    function ir(delta: number) {
+      actual += delta;
+      pistaAbierta = false; // al cambiar de punto la pista se cierra
+      render();
+    }
+
+    $('atras').onclick = () => ir(-1);
+    $('sig').onclick = () => ir(1);
+    $('pista').onclick = () => {
+      pistaAbierta = !pistaAbierta;
+      render();
+    };
+
+    render();
+  </script>
+</Layout>

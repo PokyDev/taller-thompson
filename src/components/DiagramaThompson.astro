@@ -1,0 +1,68 @@
+---
+// Diagrama de la pista del Punto 1: q0 -λ→ q2 -(a|b)→ q3 -λ→ q4 -c*→ q5 -λ→ q1
+const r = 12;
+const cx = 70;
+const nodos = ['q0', 'q2', 'q3', 'q4', 'q5', 'q1'];
+const etiquetas = ['λ', '(a|b)', 'λ', 'c*', 'λ'];
+const ys = nodos.map((_, i) => 24 + i * 46);
+const ultimo = nodos.length - 1;
+---
+<svg
+  viewBox="0 0 190 280"
+  class="diagrama"
+  role="img"
+  aria-label="Autómata por partes: q0, λ, q2, (a|b), q3, λ, q4, c*, q5, λ, q1. Inicial q0, final q1."
+>
+  <defs>
+    <marker id="flecha-thompson" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="currentColor" />
+    </marker>
+  </defs>
+
+  <!-- Flecha de entrada al estado inicial -->
+  <line class="arista" x1="8" y1={ys[0]} x2={cx - r - 2} y2={ys[0]} marker-end="url(#flecha-thompson)" />
+  <text class="nota" x="8" y={ys[0] - 8}>inicio</text>
+
+  <!-- Transiciones -->
+  {etiquetas.map((e, i) => (
+    <>
+      <line
+        class="arista"
+        x1={cx}
+        y1={ys[i] + r}
+        x2={cx}
+        y2={ys[i + 1] - r - 2}
+        marker-end="url(#flecha-thompson)"
+      />
+      <text class={e === 'λ' ? 'vacia' : 'expr'} x={cx + 12} y={(ys[i] + ys[i + 1]) / 2} dominant-baseline="central">{e}</text>
+    </>
+  ))}
+
+  <!-- Estados -->
+  {nodos.map((n, i) => (
+    <>
+      <circle class="nodo" cx={cx} cy={ys[i]} r={r} />
+      {i === ultimo && <circle class="nodo" cx={cx} cy={ys[i]} r={r - 3.5} />}
+      <text class="q" x={cx} y={ys[i]}>{n}</text>
+    </>
+  ))}
+
+  <!-- Marca de estado final -->
+  <text class="nota" x={cx + r + 8} y={ys[ultimo]} dominant-baseline="central">final</text>
+</svg>
+
+<style>
+  .diagrama {
+    display: block;
+    width: 100%;
+    max-width: 11rem;
+    margin: .75rem auto 0;
+    color: var(--texto);
+  }
+  .nodo { fill: var(--card); stroke: var(--acento); stroke-width: 2; }
+  .arista { stroke: currentColor; stroke-width: 1.5; }
+  .q { font-size: 10px; font-weight: 700; fill: currentColor; text-anchor: middle; dominant-baseline: central; }
+  .expr { font-size: 12px; font-weight: 700; fill: var(--acento); }
+  .vacia { font-size: 12px; opacity: .7; fill: currentColor; }
+  .nota { font-size: 9px; opacity: .75; fill: currentColor; }
+</style>

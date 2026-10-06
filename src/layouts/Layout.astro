@@ -1,0 +1,22 @@
+---
+import '../styles/global.css';
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <script is:inline>
+      // Se ejecuta antes de pintar: evita el parpadeo claro/oscuro
+      const guardado = localStorage.getItem('tema');
+      const sistema = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = guardado ?? sistema;
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
